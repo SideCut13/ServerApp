@@ -10,8 +10,8 @@ public interface Service {
     void updateClientService(Long id, String login, String password);
     void deleteClientService(Long id);
     List<Client> getAllClientsService();
-    void addMeal(String title, String summary, String description, String date, String imagePath);
-    void updateMeal(Long id, String title, String summary, String description, String date, String imagePath);
-    void deleteMeal(Long id);
+    void addMealService(String title, String summary, String description, String date, String imagePath, Long clientId);
+    void updateMealService(Long id, String title, String summary, String description, String date, String imagePath, Long clientId);
+    void deleteMealService(Long id);
     List<Meal> getAllMealsService();
 }

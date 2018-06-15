@@ -1,5 +1,6 @@
 package pl.zdrojewska.dao;
 
+import pl.zdrojewska.tables.Client;
 import pl.zdrojewska.tables.Meal;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 public class MealDaoImpl implements MealDao{
     private EntityManagerFactory entityManagerFactory = DbConnection.getInstance().getFactory();
+    private ClientDao clientDao = new ClientDaoImpl();
 
     @Override
     public void addMeal(Meal meal) {
@@ -23,7 +25,9 @@ public class MealDaoImpl implements MealDao{
         try
         {
             tx.begin();
-            em.persist(meal);
+            Client client = clientDao.getClientById(meal.getClient().getId()).get();
+            meal.setClient(client);
+            em.merge(meal);
             tx.commit();
         }
         catch (Exception e)
@@ -32,6 +36,7 @@ public class MealDaoImpl implements MealDao{
             {
                 tx.rollback();
             }
+            e.printStackTrace();
         }
         finally {
             if(em != null) {
@@ -54,12 +59,14 @@ public class MealDaoImpl implements MealDao{
         {
             tx.begin();
             Meal mealDb = em.find(Meal.class, meal.getId());
+            Client client = em.find(Client.class, meal.getClient().getId());
             mealDb.setTitle(meal.getTitle());
             mealDb.setSummary(meal.getSummary());
             mealDb.setDescription(meal.getDescription());
             mealDb.setDate(meal.getDate());
             mealDb.setImagePath(meal.getImagePath());
-            em.persist(mealDb);
+            mealDb.setClient(client);
+            em.merge(mealDb);
             tx.commit();
         }
         catch (Exception e)
@@ -68,6 +75,7 @@ public class MealDaoImpl implements MealDao{
             {
                 tx.rollback();
             }
+            e.printStackTrace();
         }
         finally {
             if(em != null) {

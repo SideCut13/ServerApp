@@ -46,19 +46,26 @@ public class ServiceImpl implements Service {
     }
 
     @Override
-    public void addMeal(String title, String summary, String description, String date, String imagePath) {
-        mealDao.addMeal(Meal
-                .builder()
-                .title(title)
-                .summary(summary)
-                .description(description)
-                .date(date)
-                .imagePath(imagePath).build());
+    public void addMealService(String title, String summary, String description, String date, String imagePath, Long clientId) {
+        Optional<Client> clientOp = clientDao.getClientById(clientId);
+        if(clientOp.isPresent()){
+            mealDao.addMeal(
+                    Meal
+                    .builder()
+                    .title(title)
+                    .summary(summary)
+                    .description(description)
+                    .date(date)
+                    .imagePath(imagePath)
+                    .client(clientOp.get())
+                    .build());
+        }
     }
 
     @Override
-    public void updateMeal(Long id, String title, String summary, String description, String date, String imagePath) {
+    public void updateMealService(Long id, String title, String summary, String description, String date, String imagePath, Long clientId) {
         Optional<Meal> mealOp = mealDao.getMealById(id);
+        Optional<Client> clientOp = clientDao.getClientById(clientId);
         if(mealOp.isPresent()){
             Meal meal = mealOp.get();
             meal.setTitle(title);
@@ -66,12 +73,13 @@ public class ServiceImpl implements Service {
             meal.setDescription(description);
             meal.setDate(date);
             meal.setImagePath(imagePath);
+            meal.setClient(clientOp.get());
             mealDao.updateMeal(meal);
         }
     }
 
     @Override
-    public void deleteMeal(Long id) {
+    public void deleteMealService(Long id) {
         mealDao.deleteMeal(id);
     }
 

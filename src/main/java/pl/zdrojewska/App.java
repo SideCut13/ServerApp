@@ -21,6 +21,8 @@ public class App {
     public static void main(String[] args)
     {
         Service service = new ServiceImpl();
+        service.addMealService("Sniadanie","Bulka z serem", "Posmarowac bulke maslem,dodac ser", "12341234", "", 1L);
+
        /* try {
             ExecutorService executor = Executors.newCachedThreadPool();
 
